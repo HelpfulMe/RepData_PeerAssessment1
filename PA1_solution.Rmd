@@ -1,0 +1,150 @@
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
+
+
+## Loading and preprocessing the data
+**Instructions: **  
+Show any code that is needed to:  
+1. Load the data (i.e. read.csv())  
+2. Process/transform the data (if necessary) into a format suitable for your
+analysis  
+
+```{r}
+### Loading and preprocessing the data
+# Instructions:
+# Show any code that is needed to
+# 1. Load the data (i.e. `read.csv()`)
+# 2. Process/transform the data (if necessary) into a format suitable for your analysis
+
+# For ReadMe:
+# User: download activity data either from github repo or
+# https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip
+# Save file in working directory
+
+
+# if file is from github, it will have zipped name of 'activity.zip'
+# if file is from web, zipped name will be 'repdata%2Fdata%2Factivity.zip'
+
+# See if data file is in working directory.  If not, get it
+if(!file.exists("activity.zip")) {
+    # see if download data (not from github) is there
+    if(!file.exists("repdata%2Fdata%2Factivity.zip")) {
+        # Neither file in working directory, download data
+        fileURL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+        download.file(fileURL, "activity.zip")
+    } else {
+        #downloaded file is there, rename
+        file.rename("repdata%2Fdata%2Factivity.zip", "activity.zip")
+    }
+# extract
+unzip("activity.zip")
+}
+
+
+# See if data read into R.  If not, read it.
+if(!exists('activity')){
+    # set up column classes
+    classes <- c('numeric', 'Date', 'numeric')
+    # read data
+    activity <- read.csv("activity.csv", na.strings = "NA", colClasses = classes)
+}
+
+# check activity - 17568 observations of 3 variables
+```
+
+
+
+## What is mean total number of steps taken per day?
+**Instructions: **   
+For this part of the assignment, you can ignore the missing values in the dataset.  
+1. Make a histogram of the total number of steps taken each day  
+
+```{r}
+# 1. Make a histogram of the total number of steps taken each day
+
+# First make a dataset of the total steps per day
+dailysteps <- aggregate(x=activity$steps, by=list(activity$date), FUN=sum,
+                        na.rm=TRUE)
+# dailysteps has 61 obs of 2 variables
+
+# Then make a histogram of the total steps each day
+hist(dailysteps$x,
+     main="Histogram of Total Steps Per Day",
+     xlab="Total Steps Per Day",
+     ylab = "Frequency",
+     border="blue",
+     col="green")
+
+```
+
+
+2. Calculate and report the mean and median total number of steps taken per day  
+
+```{r}
+# I interpreted this request as finding the mean and median of the total steps
+# a day calculated in part 1.  This continues to explore the question of how
+# many steps this subject took each day.
+
+meansteps <- mean(dailysteps$x, na.rm = TRUE)         #9354.23, when rounded
+mediansteps <- median(dailysteps$x, na.rm = TRUE)     #10395
+
+# Display in Rmd as
+# The mean of the total number of steps taken per day is 
+# **`r format(round(meansteps, 2), nsmall = 2)`**. 
+# The median of the total number of steps taken per day is 
+# **`r format(round(mediansteps, 2), nsmall = 2)`**. 
+```
+
+The mean of the total number of steps taken per day is 
+**`r format(round(meansteps, 2), nsmall = 2)`**.  
+  
+The median of the total number of steps taken per day is 
+**`r format(round(mediansteps, 2), nsmall = 2)`**.  
+  
+## What is the average daily activity pattern?
+**Instructions: **  
+1. Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis)   
+and the average number of steps taken, averaged across all days (y-axis)  
+2. Which 5-minute interval, on average across all the days in the dataset,   
+contains the maximum number of steps?
+
+## Imputing missing values
+**Instructions: **  
+Note that there are a number of days/intervals where there are missing values  
+(coded as NA). The presence of missing days may introduce bias into some  
+calculations or summaries of the data.  
+1. Calculate and report the total number of missing values in the dataset (i.e.  
+the total number of rows with NAs)  
+2. Devise a strategy for ﬁlling in all of the missing values in the dataset.  
+The strategy does not need to be sophisticated. For example, you could use the  
+mean/median for that day, or the mean for that 5-minute interval, etc.  
+3. Create a new dataset that is equal to the original dataset but with the  
+missing data ﬁlled in.  
+4. Make a histogram of the total number of steps taken each day and Calculate   
+and report the mean and median total number of steps taken per day. Do these  
+values diﬀer from the estimates from the ﬁrst part of the assignment? What is  
+the impact of imputing missing data on the estimates of the total daily number  
+of steps?
+
+
+## Are there differences in activity patterns between weekdays and weekends?
+**Instructions: **  
+For this part the weekdays() function may be of some help here. Use the dataset  
+with the filled-in missing values for this part.  
+  
+Create a new factor variable in the dataset with two levels -- "weekday" and  
+"weekend" indicating whether a given date is a weekday or weekend day.  
+  
+Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute  
+interval (x-axis) and the average number of steps taken, averaged across all  
+weekday days or weekend days (y-axis). The plot should look something like the  
+following, which was created using simulated data:  
+  
+Your plot will look different from the one above because you will be using the  
+activity monitor data. Note that the above plot was made using the lattice  
+system but you can make the same version of the plot using any plotting system  
+you choose.
