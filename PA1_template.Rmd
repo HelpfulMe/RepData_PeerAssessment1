@@ -47,7 +47,6 @@ if(!exists('activity')){
 ```
 
 
-
 ## What is mean total number of steps taken per day?
 **Instructions: **   
 For this part of the assignment, you can ignore the missing values in the dataset.  
@@ -181,7 +180,7 @@ missing data ﬁlled in.
 
 ```{r ImputingNewDataset}
 # merge the average steps per interval dataset with the existing activity
-# dataset
+# dataset.
 activity2 <- merge(x=activity, y=intervalsteps, by.x = "interval",
                    by.y = "Group.1")
 # activity2 dataset has a column named x with the average steps per interval
